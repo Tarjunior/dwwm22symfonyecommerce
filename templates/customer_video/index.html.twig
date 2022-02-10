@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CustomerVideoController!{% endblock %}
+
+{% block body %}
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-8">
+            <iframe class="w-100" height="400" 
+                src="https://www.youtube.com/embed/{{ video.codeYoutube }}" 
+                title="YouTube video player" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+
+            <div class="mt-2">
+                <h3 style="font-size:20px;">{{ video.name | upper }}</h3>
+            </div>
+
+            <div>
+                <p>{{ comments | length }} commentaire(s)</p>
+            </div>
+
+            {% if app.user %}
+
+            <div class="d-flex">   
+                <div>
+                    <img class="avatarComment" src="https://images.unsplash.com/photo-1505440484611-23c171ad6e96?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2908&q=80" alt="">
+                </div>
+                {{ form_start(form,{'attr':{'class' : 'w-100'}} ) }}
+
+                {{ form_widget(form) }}
+
+                <div id="divButtonCancelSubmit" class="d-flex justify-content-end align-items-center" style="display:none !important;">
+                    <button type="button" id="buttonCancelInputComment" class="btn btn-light">Annuler</button>
+                    <button disabled id="buttonSubmitComment" class="btn btn-secondary btn-sm">AJOUTER UN COMMENTAIRE</button>
+                </div>
+
+                {{ form_end(form)  }}
+            </div>
+
+            {% else %}
+
+            <div class="d-flex align-items-center">
+               <p class="mb-0"><strong>Veuillez vous connecter pour ajouter un commentaire.</strong></p>
+                <a class="btn btn-link" href={{ path('app_login') }}>Se connecter</a>
+            </div>
+         
+
+            {% endif %}
+
+            <div class="py-3">
+                <div class="row">
+                    {% for comment in comments %}
+                        <div class="col-12 d-flex ">
+                        
+                                <div>
+                                    <img class="avatarComment" 
+                                    {% if comment.user.avatar is not same as null %}
+                                    src="{{ comment.user.avatar }}"
+                                    {% else %}
+                                    src="https://images.unsplash.com/photo-1505440484611-23c171ad6e96?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2908&q=80" 
+
+                                    {% endif %}
+                                    
+                                    alt="">
+                                </div>
+
+                                <div >
+                                    <div class="d-flex align-items-center w-100">
+                                        <p style="font-size:12px;" class="mb-0 "><strong>{{ comment.user.pseudo }}</strong></p>
+                                        <p style="font-size:12px;margin-left:5px !important;" class="mb-0">{{ comment.createdAt | date('d-M-Y') }}</p>
+                                    </div>
+                                    <div class="text-secondary mb-0">
+                                        <p>{{ comment.content  }}</p>
+                                    </div>
+                                </div>
+                       
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+        <div class="col-4">
+            <div class="d-flex flex-column">
+                {% for item in videos %}
+                    {% if item.codeYoutube is not same as video.codeYoutube %}
+
+                        <div class="row mt-2">
+                            <div class="col-6">
+                                <img class="w-100" src="{{ item.image }}" alt="" style='height:100px;object-fit:cover;'>
+                            </div>
+                            <div class="col-6">
+                                <p style="font-size:14px;" class="mb-1"><strong>{{ item.name }}</strong><p>
+                                <a href="{{ path('customer_video_visionner',{ 'id' : item.id })  }}" class="btn btn-sm btn-dark">
+                                  <i class="fa-brands fa-youtube"></i> Visionner
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const inputComment = document.getElementById('comment_content');
+const divButtonCancelSubmit = document.getElementById('divButtonCancelSubmit');
+const buttonCancelInputComment = document.getElementById('buttonCancelInputComment');
+const buttonSubmitComment = document.getElementById('buttonSubmitComment');
+
+const toggleDisabledButtonSubmit = (lengthValue) => {
+    if(lengthValue > 0)
+    {
+        buttonSubmitComment.disabled = false;
+        buttonSubmitComment.setAttribute('class','btn btn-sm btn-primary');
+    }
+    else if(lengthValue < 1)
+    {
+        buttonSubmitComment.disabled = true;
+        buttonSubmitComment.setAttribute('class','btn btn-sm btn-secondary');
+    }
+}
+
+inputComment.addEventListener('click', () => {
+    divButtonCancelSubmit.style.display = 'initial';
+})
+
+buttonCancelInputComment.addEventListener('click', () => {
+    divButtonCancelSubmit.setAttribute('style','display:none !important');
+    inputComment.value = '';
+    buttonSubmitComment.disabled = true;
+    buttonSubmitComment.setAttribute('class','btn btn-sm btn-secondary');
+})
+
+inputComment.addEventListener('keyup', () => {
+
+    let lengthValue = inputComment.value.length;
+    toggleDisabledButtonSubmit(lengthValue);
+})
+
+</script>
+
+{% endblock %}

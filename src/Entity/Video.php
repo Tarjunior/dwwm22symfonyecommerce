@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\CategoryRepository;
+use App\Repository\VideoRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: CategoryRepository::class)]
-class Category
+#[ORM\Entity(repositoryClass: VideoRepository::class)]
+class Video
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,15 +21,19 @@ class Category
     private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\NotBlank(message: 'Le champs codeYoutube est requis.')]
+    private $codeYoutube;
+
+    #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank(message: 'Le champs image est requis.')]
     private $image;
 
-    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Product::class, orphanRemoval: true)]
-    private $products;
+    #[ORM\OneToMany(mappedBy: 'video', targetEntity: Comment::class, orphanRemoval: true)]
+    private $comments;
 
     public function __construct()
     {
-        $this->products = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -49,6 +53,18 @@ class Category
         return $this;
     }
 
+    public function getCodeYoutube(): ?string
+    {
+        return $this->codeYoutube;
+    }
+
+    public function setCodeYoutube(string $codeYoutube): self
+    {
+        $this->codeYoutube = $codeYoutube;
+
+        return $this;
+    }
+
     public function getImage(): ?string
     {
         return $this->image;
@@ -62,33 +78,32 @@ class Category
     }
 
     /**
-     * @return Collection|Product[]
+     * @return Collection|Comment[]
      */
-    public function getProducts(): Collection
+    public function getComments(): Collection
     {
-        return $this->products;
+        return $this->comments;
     }
 
-    public function addProduct(Product $product): self
+    public function addComment(Comment $comment): self
     {
-        if (!$this->products->contains($product)) {
-            $this->products[] = $product;
-            $product->setCategory($this);
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setVideo($this);
         }
 
         return $this;
     }
 
-    public function removeProduct(Product $product): self
+    public function removeComment(Comment $comment): self
     {
-        if ($this->products->removeElement($product)) {
+        if ($this->comments->removeElement($comment)) {
             // set the owning side to null (unless already changed)
-            if ($product->getCategory() === $this) {
-                $product->setCategory(null);
+            if ($comment->getVideo() === $this) {
+                $comment->setVideo(null);
             }
         }
 
         return $this;
     }
-
 }

@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route('/product')]
+#[Route('/admin/product')]
 class ProductController extends AbstractController
 {
     #[Route('/', name: 'product_index', methods: ['GET'])]
@@ -31,7 +30,6 @@ class ProductController extends AbstractController
             'products' => $products,
         ]);
     }
-
 
     #[Route('/new', name: 'product_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

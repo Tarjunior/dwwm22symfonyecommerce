@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ProfileController!{% endblock %}
+
+{% block body %}
+
+<div class="container py-5">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    {% if app.user.couverture is not same as null %}
+
+                        <img class="w-100" style="height:300px;object-fit:cover;" src="{{ app.user.couverture }}" alt="">
+                    
+                    {% else %}
+
+                        <img class="w-100" style="height:300px;object-fit:cover;" src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80" alt="">
+                    
+                    {% endif %}
+                </div>
+                <div class="col-12" style="max-height: 100px;height: 100px;">
+                    {% if app.user.avatar is not same as null %}
+
+                        <img class="avatarProfile" src="{{ app.user.avatar }}" alt="">
+                    
+                    {% else %}
+
+                        <img class="avatarProfile" src="https://images.unsplash.com/photo-1505440484611-23c171ad6e96?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2908&q=80" alt="">
+                    
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+        <div class="row">
+                <div class="col-12">
+                    <div class="card-body" style="    margin-left: 50px;margin-top: -50px;">
+                        <p><strong>Nom :</strong> {{ app.user.name }}</p>
+                        <p><strong>Pseudo :</strong> {{ app.user.pseudo }}</p>
+                        <p><strong>Email :</strong> {{ app.user.email }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
